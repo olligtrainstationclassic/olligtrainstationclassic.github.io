@@ -24,7 +24,7 @@ body{
     object-fit:cover;
 }
 
-/* search + info bar */
+/* top area */
 .topbar{
     display:flex;
     align-items:center;
@@ -80,6 +80,34 @@ a:hover{
     text-decoration:underline;
 }
 
+/* Pixel Portal Name hervorheben */
+.tabulator-cell:nth-child(3){
+    color:#ffd166;
+    font-weight:600;
+}
+
+/* mobile optimisation */
+@media (max-width: 900px){
+
+.tabulator{
+    font-size:14px;
+}
+
+.tabulator-row{
+    min-height:42px;
+}
+
+.topbar{
+    flex-direction:column;
+    gap:6px;
+}
+
+.header{
+    max-height:140px;
+}
+
+}
+
 </style>
 
 </head>
@@ -124,13 +152,23 @@ fetch(sheetURL)
 
     const cols = Object.keys(json[0]).map((col,i)=>{
 
-        /* Facebook column */
+        /* Status */
+        if(i==0){
+            return {
+                title:col,
+                field:col,
+                frozen:true
+            }
+        }
+
+        /* Facebook */
         if(i==1){
 
             return {
 
                 title:col,
                 field:col,
+                frozen:true,
 
                 formatter:function(cell){
 
@@ -150,13 +188,14 @@ fetch(sheetURL)
 
         }
 
-        /* Pixel Portal copy column */
+        /* Pixel Portal copy */
         if(i==2){
 
             return {
 
                 title:col,
                 field:col,
+                frozen:true,
 
                 cellClick:function(e,cell){
 
