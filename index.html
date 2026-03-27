@@ -14,34 +14,39 @@ body{
     background:#111;
     color:#eee;
     font-family:Arial;
-    padding:20px;
+    margin:0;
 }
 
-/* Bild */
-.header-img{
-    max-width:100%;
-    margin-bottom:15px;
+/* Header Bild */
+.header{
+    width:100%;
+    max-height:220px;
+    object-fit:cover;
 }
 
-/* Suche */
+/* Suchfeld */
+.searchBox{
+    padding:10px;
+}
+
 input{
     background:#222;
     color:#eee;
     border:1px solid #444;
     padding:6px;
-    margin-bottom:10px;
     width:250px;
 }
 
-/* Kopf fixieren */
-.tabulator{
-    height:85vh;
+/* Tabelle */
+#table{
+    height:calc(100vh - 280px);
 }
 
+/* Kopfzeile fix */
 .tabulator-header{
     position:sticky !important;
     top:0;
-    z-index:100;
+    z-index:999;
 }
 
 </style>
@@ -50,11 +55,11 @@ input{
 
 <body>
 
-<img class="header-img" src="header.png">
+<img src="header.jpg" class="header">
 
-<br>
-
+<div class="searchBox">
 <input id="search" placeholder="Suche...">
+</div>
 
 <div id="table"></div>
 
@@ -81,28 +86,38 @@ fetch(sheetURL)
 
     const cols = Object.keys(json[0]).map((col,i)=>{
 
-        // Spalte B Facebook Links klickbar
+        // Spalte B Facebook
         if(i==1){
+
             return {
+
                 title:col,
                 field:col,
+
                 formatter:function(cell){
 
-                    let url = cell.getValue();
+                    let text = cell.getValue();
 
-                    if(!url) return "";
+                    if(!text) return "";
 
-                    if(!url.startsWith("http"))
-                        url = "https://"+url;
+                    // falls nur Name vorhanden → Facebook Suche
+                    let url =
+                    "https://www.facebook.com/search/top?q="
+                    + encodeURIComponent(text);
 
-                    return "<a href='"+url+"' target='_blank'>Profil öffnen</a>";
+                    return "<a href='"+url+"' target='_blank'>"+text+"</a>";
+
                 }
+
             }
+
         }
 
-        // Spalte C klick kopiert
+        // Spalte C kopieren
         if(i==2){
+
             return {
+
                 title:col,
                 field:col,
 
@@ -111,7 +126,9 @@ fetch(sheetURL)
                     navigator.clipboard.writeText(cell.getValue());
 
                 }
+
             }
+
         }
 
         return {
@@ -121,7 +138,6 @@ fetch(sheetURL)
 
     });
 
-
     if(!table){
 
         table = new Tabulator("#table",{
@@ -129,8 +145,6 @@ fetch(sheetURL)
             data:json,
 
             layout:"fitDataStretch",
-
-            movableColumns:true,
 
             columns:cols
 
@@ -147,6 +161,7 @@ fetch(sheetURL)
 }
 
 loadData();
+
 
 // globale Suche
 document.getElementById("search").addEventListener("keyup",function(){
