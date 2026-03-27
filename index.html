@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Trainstation Tabelle</title>
+<title>Trainstation Friends</title>
 
 <link href="https://unpkg.com/tabulator-tables@5.5.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
 <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
@@ -17,36 +17,67 @@ body{
     margin:0;
 }
 
-/* Header Bild */
+/* header image */
 .header{
     width:100%;
     max-height:220px;
     object-fit:cover;
 }
 
-/* Suchfeld */
-.searchBox{
+/* search + info bar */
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
     padding:10px;
 }
 
+/* search */
 input{
     background:#222;
     color:#eee;
     border:1px solid #444;
-    padding:6px;
-    width:250px;
+    padding:6px 10px;
+    width:220px;
 }
 
-/* Tabelle */
+/* info text */
+.info{
+    font-size:14px;
+    color:#bbb;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+/* icon */
+.icon{
+    font-size:16px;
+}
+
+/* table height */
 #table{
     height:calc(100vh - 280px);
 }
 
-/* Kopfzeile fix */
+/* sticky header */
 .tabulator-header{
     position:sticky !important;
     top:0;
     z-index:999;
+}
+
+/* facebook links */
+a{
+    color:#7cc7ff;
+    text-decoration:none;
+    font-weight:500;
+}
+
+a:hover{
+    color:#a8ddff;
+    text-decoration:underline;
 }
 
 </style>
@@ -57,8 +88,15 @@ input{
 
 <img src="header.jpg" class="header">
 
-<div class="searchBox">
-<input id="search" placeholder="Suche...">
+<div class="topbar">
+
+<input id="search" placeholder="Search...">
+
+<div class="info">
+<span class="icon">📋</span>
+One-Click-Copy "Pixel Portal Name"
+</div>
+
 </div>
 
 <div id="table"></div>
@@ -86,7 +124,7 @@ fetch(sheetURL)
 
     const cols = Object.keys(json[0]).map((col,i)=>{
 
-        // Spalte B Facebook
+        /* Facebook column */
         if(i==1){
 
             return {
@@ -100,7 +138,6 @@ fetch(sheetURL)
 
                     if(!text) return "";
 
-                    // falls nur Name vorhanden → Facebook Suche
                     let url =
                     "https://www.facebook.com/search/top?q="
                     + encodeURIComponent(text);
@@ -113,7 +150,7 @@ fetch(sheetURL)
 
         }
 
-        // Spalte C kopieren
+        /* Pixel Portal copy column */
         if(i==2){
 
             return {
@@ -146,6 +183,8 @@ fetch(sheetURL)
 
             layout:"fitDataStretch",
 
+            movableColumns:true,
+
             columns:cols
 
         });
@@ -162,8 +201,8 @@ fetch(sheetURL)
 
 loadData();
 
+/* global search */
 
-// globale Suche
 document.getElementById("search").addEventListener("keyup",function(){
 
     const value = this.value.toLowerCase();
