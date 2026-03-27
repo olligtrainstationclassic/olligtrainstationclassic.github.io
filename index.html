@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Trainstation Tabelle</title>
+
+<link href="https://unpkg.com/tabulator-tables@5.5.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/tabulator-tables@5.5.0/dist/js/tabulator.min.js"></script>
+
+<style>
+
+body{
+    background:#111;
+    color:#eee;
+    font-family:Arial;
+    padding:20px;
+}
+
+#table{
+    border:1px solid #333;
+}
+
+.controls{
+    margin-bottom:10px;
+}
+
+input{
+    background:#222;
+    color:#eee;
+    border:1px solid #444;
+    padding:6px;
+}
+
+button{
+    background:#222;
+    color:#eee;
+    border:1px solid #444;
+    padding:6px 10px;
+    cursor:pointer;
+}
+
+.tabulator-header{
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="controls">
+
+<input id="search" placeholder="Suche...">
+
+<button onclick="copySelected()">Zeile kopieren</button>
+
+</div>
+
+<div id="table"></div>
+
+<script>
+
+const sheetURL =
+"https://docs.google.com/spreadsheets/d/1cZNXQHDezV_W0maz0ufxbL1nVJfchSKNjlgDucwbtig/export?format=xlsx";
+
+let table;
+
+function loadData(){
+
+fetch(sheetURL)
+.then(res => res.arrayBuffer())
+.then(data => {
+
+    const workbook = XLSX.read(data);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+    const json = XLSX.utils.sheet_to_json(sheet,{
+        defval:"",
+        raw:false
+    });
+
+    if(!table){
+
+        table = new Tabulator("#table",{
+
+            data:json,
+
+            layout:"fitDataStretch",
+
+            height:"85vh",
+
+            movableColumns:true,
+
+            selectable:1,
+
+            clipboard:true,
+
+            columns:Object.keys(json[0]).map((col,i)=>({
+
+                title:col,
+                field:col,
+
+                frozen:i==0,
+
+                headerFilter:true,
+
+                sorter:"string",
+
+                cellClick:function(e,cell){
+
+                    navigator.clipboard.writeText(cell.getValue());
+
+                }
+
+            }))
+
+        });
+
+    }else{
+
+        table.replaceData(json);
+
+    }
+
+});
+
+}
+
+loadData();
+
+setInterval(loadData,300000);
+
+
+// globale Suche
+document.getElementById("search").addEventListener("keyup",function(){
+
+    const value = this.value.toLowerCase();
+
+    table.setFilter(function(data){
+
+        return Object.values(data).some(v =>
+            String(v).toLowerCase().includes(value)
+        );
+
+    });
+
+});
+
+
+// Zeile kopieren
+function copySelected(){
+
+    const row = table.getSelectedData()[0];
+
+    if(!row) return;
+
+    const text = Object.values(row).join(" | ");
+
+    navigator.clipboard.writeText(text);
+
+}
+
+</script>
+
+</body>
+</html>
