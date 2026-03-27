@@ -17,33 +17,31 @@ body{
     padding:20px;
 }
 
-#table{
-    border:1px solid #333;
+/* Bild */
+.header-img{
+    max-width:100%;
+    margin-bottom:15px;
 }
 
-.controls{
-    margin-bottom:10px;
-}
-
+/* Suche */
 input{
     background:#222;
     color:#eee;
     border:1px solid #444;
     padding:6px;
+    margin-bottom:10px;
+    width:250px;
 }
 
-button{
-    background:#222;
-    color:#eee;
-    border:1px solid #444;
-    padding:6px 10px;
-    cursor:pointer;
+/* Kopf fixieren */
+.tabulator{
+    height:85vh;
 }
 
 .tabulator-header{
-    position:sticky;
+    position:sticky !important;
     top:0;
-    z-index:10;
+    z-index:100;
 }
 
 </style>
@@ -52,13 +50,11 @@ button{
 
 <body>
 
-<div class="controls">
+<img class="header-img" src="header.png">
+
+<br>
 
 <input id="search" placeholder="Suche...">
-
-<button onclick="copySelected()">Zeile kopieren</button>
-
-</div>
 
 <div id="table"></div>
 
@@ -83,6 +79,49 @@ fetch(sheetURL)
         raw:false
     });
 
+    const cols = Object.keys(json[0]).map((col,i)=>{
+
+        // Spalte B Facebook Links klickbar
+        if(i==1){
+            return {
+                title:col,
+                field:col,
+                formatter:function(cell){
+
+                    let url = cell.getValue();
+
+                    if(!url) return "";
+
+                    if(!url.startsWith("http"))
+                        url = "https://"+url;
+
+                    return "<a href='"+url+"' target='_blank'>Profil öffnen</a>";
+                }
+            }
+        }
+
+        // Spalte C klick kopiert
+        if(i==2){
+            return {
+                title:col,
+                field:col,
+
+                cellClick:function(e,cell){
+
+                    navigator.clipboard.writeText(cell.getValue());
+
+                }
+            }
+        }
+
+        return {
+            title:col,
+            field:col
+        }
+
+    });
+
+
     if(!table){
 
         table = new Tabulator("#table",{
@@ -91,32 +130,9 @@ fetch(sheetURL)
 
             layout:"fitDataStretch",
 
-            height:"85vh",
-
             movableColumns:true,
 
-            selectable:1,
-
-            clipboard:true,
-
-            columns:Object.keys(json[0]).map((col,i)=>({
-
-                title:col,
-                field:col,
-
-                frozen:i==0,
-
-                headerFilter:true,
-
-                sorter:"string",
-
-                cellClick:function(e,cell){
-
-                    navigator.clipboard.writeText(cell.getValue());
-
-                }
-
-            }))
+            columns:cols
 
         });
 
@@ -132,9 +148,6 @@ fetch(sheetURL)
 
 loadData();
 
-setInterval(loadData,300000);
-
-
 // globale Suche
 document.getElementById("search").addEventListener("keyup",function(){
 
@@ -149,20 +162,6 @@ document.getElementById("search").addEventListener("keyup",function(){
     });
 
 });
-
-
-// Zeile kopieren
-function copySelected(){
-
-    const row = table.getSelectedData()[0];
-
-    if(!row) return;
-
-    const text = Object.values(row).join(" | ");
-
-    navigator.clipboard.writeText(text);
-
-}
 
 </script>
 
