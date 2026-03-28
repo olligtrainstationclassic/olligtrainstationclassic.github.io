@@ -163,170 +163,93 @@ One-Click-Copy "Pixel Portal Name"
 
 <script>
 
-const sheetURL =
-"https://docs.google.com/spreadsheets/d/1cZNXQHDezV_W0maz0ufxbL1nVJfchSKNjlgDucwbtig/export?format=xlsx";
-
+const sheetURL = "https://docs.google.com/spreadsheets/d/1cZNXQHDezV_W0maz0ufxbL1nVJfchSKNjlgDucwbtig/export?format=xlsx";
 let table;
 
-/* prüft ob Text bereits ein echter Link ist */
-function isURL(text){
+function loadData() {
+    fetch(sheetURL)
+    .then(res => res.arrayBuffer())
+    .then(data => {
+        const workbook = XLSX.read(data, {cellLinks: true});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        
+        // Wir wandeln das Sheet in ein Array von Arrays um, um die Links präzise zu extrahieren
+        const rows = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: ""});
+        const headers = rows[0];
+        const jsonData = [];
 
-if(!text) return false;
+        // Wir gehen jede Zeile durch und verheiraten Text mit dem versteckten Link
+        for (let r = 1; r < rows.length; r++) {
+            let rowObj = {};
+            headers.forEach((header, c) => {
+                rowObj[header] = rows[r][c];
+                
+                // Nur für Spalte B (Index 1): Link extrahieren
+                if (c === 1) {
+                    const cellAddr = XLSX.utils.encode_cell({r: r, c: c});
+                    const cell = sheet[cellAddr];
+                    rowObj["fb_link"] = (cell && cell.l && cell.l.Target) ? cell.l.Target : "";
+                }
+            });
+            jsonData.push(rowObj);
+        }
 
-text = text.trim();
+        const columns = [
+            { title: headers[0], field: headers[0], cssClass: "statusCol", hozAlign: "center", frozen: true },
+            { 
+                title: headers[1], 
+                field: headers[1], 
+                frozen: true,
+                formatter: function(cell) {
+                    const name = cell.getValue();
+                    const link = cell.getData().fb_link; // Wir holen den Link aus unserem neuen Feld
+                    
+                    if (!name) return "";
+                    
+                    // Wenn ein Link existiert, nutzen wir ihn, sonst Fallback zur Suche
+                    const url = link ? link : "https://www.facebook.com" + encodeURIComponent(name);
+                    return `<a href="${url}" target="_blank">${name}</a>`;
+                }
+            },
+            { 
+                title: headers[2], 
+                field: headers[2], 
+                cssClass: "portalCol", 
+                frozen: true,
+                cellClick: (e, cell) => navigator.clipboard.writeText(cell.getValue())
+            }
+        ];
 
-return text.startsWith("http://") ||
-       text.startsWith("https://") ||
-       text.startsWith("www.facebook.com");
+        // Restliche Spalten
+        headers.slice(3).forEach(col => columns.push({ title: col, field: col }));
 
+        if (!table) {
+            table = new Tabulator("#table", { data: jsonData, columns: columns, layout: "fitDataStretch" });
+        } else {
+            table.replaceData(jsonData);
+        }
+    });
 }
 
-function loadData(){
 
-fetch(sheetURL)
-
-.then(res => res.arrayBuffer())
-
-.then(data => {
-
-const workbook = XLSX.read(data);
-
-const sheet = workbook.Sheets[workbook.SheetNames[0]];
-
-const json = XLSX.utils.sheet_to_json(sheet,{
-defval:"",
-raw:false
-});
-
-/* feste Spalten */
-
-const columns = [
-
-{
-title:Object.keys(json[0])[0],
-field:Object.keys(json[0])[0],
-cssClass:"statusCol",
-hozAlign:"center",
-frozen:true
-},
-
-{
-title:Object.keys(json[0])[1],
-field:Object.keys(json[0])[1],
-frozen:true,
-
-formatter:function(cell){
-
-let value = cell.getValue();
-
-if(!value) return "";
-
-let url;
-
-/* wenn echter Link vorhanden → direkt nutzen */
-if(isURL(value)){
-
-if(!value.startsWith("http"))
-value = "https://" + value;
-
-url = value;
-
-}
-
-/* sonst Facebook Suche */
-else{
-
-url =
-"https://www.facebook.com/search/top?q="
-+ encodeURIComponent(value);
-
-}
-
-return `<a href="${url}" target="_blank">${value}</a>`;
-
-}
-
-},
-
-{
-title:Object.keys(json[0])[2],
-field:Object.keys(json[0])[2],
-cssClass:"portalCol",
-frozen:true,
-
-cellClick:function(e,cell){
-
-navigator.clipboard.writeText(cell.getValue());
-
-}
-
-}
-
-];
-
-/* restliche Spalten automatisch */
-
-Object.keys(json[0]).slice(3).forEach(col=>{
-
-columns.push({
-
-title:col,
-field:col
-
-});
-
-});
-
-/* Tabelle */
-
-if(!table){
-
-table = new Tabulator("#table",{
-
-data:json,
-
-columns:columns,
-
-layout:"fitDataStretch"
-
-});
-
-}
-
-else{
-
-table.replaceData(json);
-
-}
-
-});
-
-}
 
 loadData();
 
-/* Suche */
-
-document.getElementById("search").addEventListener("keyup",function(){
-
-let value = this.value.toLowerCase();
-
-table.setFilter(data =>
-
-Object.values(data).some(v =>
-
-String(v).toLowerCase().includes(value)
-
-)
-
-);
-
+// Suche
+document.getElementById("search").addEventListener("keyup", function() {
+    let value = this.value.toLowerCase();
+    table.setFilter(data =>
+        Object.values(data).some(v => String(v).toLowerCase().includes(value))
+    );
 });
+
+
 
 </script>
 
 </body>
 
 </html>
+
 
 
