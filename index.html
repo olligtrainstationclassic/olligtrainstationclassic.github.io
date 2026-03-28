@@ -8,7 +8,6 @@
 <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/tabulator-tables@5.5.0/dist/js/tabulator.min.js"></script>
 
-<!-- Roboto Mono -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
 
 <style>
@@ -20,14 +19,14 @@ body{
     margin:0;
 }
 
-/* header image */
+/* header */
 .header{
     width:100%;
     max-height:220px;
     object-fit:cover;
 }
 
-/* top bar */
+/* top area */
 .topbar{
     display:flex;
     align-items:center;
@@ -55,7 +54,6 @@ input{
     gap:6px;
 }
 
-/* icon */
 .icon{
     font-size:16px;
 }
@@ -75,16 +73,22 @@ input{
     font-weight:600;
 }
 
-/* higher rows */
+/* rows */
 .tabulator-row{
-    min-height:46px;
+    min-height:48px;
+}
+
+/* all cells vertical center */
+.tabulator-cell{
+    display:flex;
+    align-items:center;
 }
 
 /* facebook links */
 a{
     color:#7cc7ff;
     text-decoration:none;
-    font-weight:500;
+    font-weight:400;
 }
 
 a:hover{
@@ -92,7 +96,7 @@ a:hover{
     text-decoration:underline;
 }
 
-/* Pixel Portal Name style */
+/* Pixel Portal Name style (Spalte C) */
 .tabulator-cell:nth-child(3){
     font-family:'Roboto Mono', monospace;
     font-weight:700;
@@ -100,12 +104,12 @@ a:hover{
     color:#ffd166;
 }
 
-/* Status column centered */
+/* Status zentriert */
 .tabulator-cell:nth-child(1){
-    text-align:center;
+    justify-content:center;
 }
 
-/* mobile optimisation */
+/* mobile */
 @media (max-width: 900px){
 
 .tabulator{
@@ -155,6 +159,10 @@ const sheetURL =
 
 let table;
 
+function isURL(text){
+    return text.startsWith("http://") || text.startsWith("https://");
+}
+
 function loadData(){
 
 fetch(sheetURL)
@@ -191,19 +199,37 @@ fetch(sheetURL)
 
                 formatter:function(cell){
 
-                    let text = cell.getValue();
+                    let value = cell.getValue();
 
-                    if(!text) return "";
+                    if(!value) return "";
 
                     let url;
+                    let text;
 
-                    if(text.startsWith("http")){
-                        url = text;
+                    if(isURL(value)){
+
+                        url = value;
+
+                        try{
+                            let u = new URL(value);
+                            text = u.pathname.replace(/\//g,"");
+
+                            if(text.length < 3)
+                                text = value;
+
+                        }catch{
+                            text = value;
+                        }
+
                     }
                     else{
+
                         url =
                         "https://www.facebook.com/search/top?q="
-                        + encodeURIComponent(text);
+                        + encodeURIComponent(value);
+
+                        text = value;
+
                     }
 
                     return "<a href='"+url+"' target='_blank'>"+text+"</a>";
