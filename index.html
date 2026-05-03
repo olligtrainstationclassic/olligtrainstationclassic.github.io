@@ -129,56 +129,71 @@ color:#ffffff;
 .statusCol{
 justify-content:center;
 }
+/* Generelle Anpassung für kompaktes Layout */
 .topbar {
-    display: block; /* Zurück auf Block, damit die Breite nicht limitiert wird */
+    display: block;
     text-align: center;
-    padding: 20px 0;
+    padding: 10px 0; /* Weniger Padding oben/unten */
     width: 100%;
 }
 
-.explanation {
-    display: inline-block; /* Sorgt dafür, dass der Kasten nur so breit wie der Text ist */
-    margin-bottom: 20px;
-    font-size: 16px;
-    line-height: 1.5;
-    background: rgba(34, 34, 34, 0.8); /* Etwas transparenter für den Hintergrund */
-    padding: 12px 25px;
-    border-radius: 10px;
-    border: 1px solid #444;
-    color: #fff;
-    max-width: 90%; /* Verhindert, dass es am Handy den Rand berührt */
+/* Neuer, dezenterer Text-Stil (kein dunkler Kasten mehr) */
+.explanation-text {
+    color: #ccc; /* Etwas helleres Grau */
+    font-size: 15px;
+    margin: 5px 0 15px 0; /* Weniger Abstand */
+    line-height: 1.4;
 }
 
-.messenger-btn {
+/* Kleinerer, integrierter Messenger-Button */
+.messenger-inline-btn {
     display: inline-block;
-    margin-top: 5px; /* Falls der Button in die nächste Zeile rutscht */
-    margin-left: 10px;
+    margin-left: 8px;
     background: #0084ff;
     color: white !important;
-    padding: 6px 15px;
-    border-radius: 6px;
-    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 13px;
     text-decoration: none !important;
     vertical-align: middle;
 }
 
+/* Bestehende Such-Wrapper-Zentrierung */
 .search-info-wrapper {
     display: flex;
-    justify-content: center; /* Zentriert Suche und Info-Text */
+    justify-content: center;
     align-items: center;
-    gap: 20px;
-    width: 100%;
-    margin-bottom: 10px;
+    gap: 15px; /* Etwas weniger Gap */
+    margin-bottom: 5px;
 }
 
-/* Mobile Optimierung */
-@media (max-width:900px) {
+/* --- Spezifische Desktop-Anpassungen (staucht den Header) --- */
+@media (min-width: 901px) {
+    /* WICHTIG: Die Klasse des Logos anpassen, falls sie anders heißt */
+    .header img, .logo-container img { 
+        max-height: 120px !important; /* Verkleinert die Logos deutlich */
+        width: auto;
+    }
+
+    .topbar {
+        padding: 5px 0; /* Noch weniger Padding auf Desktop */
+    }
+
+    .explanation-text {
+        font-size: 14px; /* Etwas kleinerer Text */
+        margin: 0 0 10px 0;
+    }
+}
+
+/* Mobile Optimierung (wie vorher, nur kompakter) */
+@media (max-width: 900px) {
     .search-info-wrapper {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
     }
-    .explanation {
+    .explanation-text {
         font-size: 14px;
+        padding: 0 10px;
     }
 }
     
@@ -216,7 +231,7 @@ max-height:140px;
     <!-- Kompakterer Erklärungs-Text -->
     <p class="explanation-text">
         Möchtest du hinzugefügt werden? Sende mir deinen exakten Portal-Namen per PN.
-        <a href="DEIN_MESSENGER_LINK" target="_blank" class="messenger-inline-btn">📬 Nachricht senden</a>
+        <a href="https://m.me/oliver.garbrecht" target="_blank" class="messenger-inline-btn">📬 Nachricht senden</a>
     </p>
 
     <div class="search-info-wrapper">
