@@ -129,7 +129,57 @@ color:#ffffff;
 .statusCol{
 justify-content:center;
 }
+.topbar {
+    display: flex;
+    flex-direction: column; /* Stapelt Text und Suche übereinander */
+    align-items: center;
+    gap: 15px;
+    padding: 20px 12px;
+}
 
+.explanation {
+    text-align: center;
+    max-width: 600px;
+    font-size: 16px;
+    line-height: 1.4;
+    background: #222;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #444;
+}
+
+.messenger-btn {
+    display: inline-block;
+    margin-left: 10px;
+    background: #0084ff; /* Messenger Blau */
+    color: white !important;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-decoration: none !important;
+}
+
+.messenger-btn:hover {
+    background: #0073e6;
+}
+
+.search-info-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Mobile Optimierung */
+@media (max-width:900px) {
+    .search-info-wrapper {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .explanation {
+        font-size: 14px;
+    }
+}
+    
 /* mobile */
 @media (max-width:900px){
 
@@ -161,12 +211,16 @@ max-height:140px;
 <img src="header.jpg" class="header">
 
 <div class="topbar">
+    <div class="explanation">
+        Möchtest du hinzugefügt werden? Schicke mir eine PN mit deinem exakten Portal-Namen. 
+        <a href="https://m.me/oliver.garbrecht" target="_blank" class="messenger-btn">📬 Nachricht senden</a>
+    </div>
 
-<input id="search" placeholder="Search...">
-
-<div class="info">
-<span class="icon">📋</span>
-One-Click-Copy "Pixel Portal Name"
+    <div class="search-info-wrapper">
+        <input id="search" placeholder="Search...">
+        <div class="info">
+            <span class="icon">📋</span>
+            One-Click-Copy "Pixel Portal Name"
 </div>
 
 </div>
