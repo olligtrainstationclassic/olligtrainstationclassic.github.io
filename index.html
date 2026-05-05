@@ -81,7 +81,8 @@ font-size:16px;
 
 /* table */
 #table {
-    flex-grow: 1; /* Nimmt den kompletten restlichen Platz ein */
+    flex-grow: 1;    /* Füllt den Rest aus */
+    min-height: 0;   /* Zwingt den Container, nicht größer als der Restplatz zu werden */
     font-size: 15px;
     width: 100%;
 }
