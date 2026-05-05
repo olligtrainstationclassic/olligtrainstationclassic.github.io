@@ -26,18 +26,12 @@
 
 <style>
 
-body {
-    background: #111;
-    color: #eee;
-    font-family: Arial;
-    margin: 0;
-    /* Neu: Flexbox Layout */
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Fest auf Bildschirmhöhe fixieren */
-    overflow: hidden; /* Verhindert doppeltes Scrollen am Rand */
+body{
+background:#111;
+color:#eee;
+font-family:Arial;
+margin:0;
 }
-
 
 /* header image */
 .header{
@@ -80,13 +74,10 @@ font-size:16px;
 }
 
 /* table */
-#table {
-    flex-grow: 1;    /* Füllt den Rest aus */
-    min-height: 0;   /* Zwingt den Container, nicht größer als der Restplatz zu werden */
-    font-size: 15px;
-    width: 100%;
+#table{
+height:calc(100vh - 280px);
+font-size:15px;
 }
-
 
 /* header row */
 .tabulator-header{
@@ -318,13 +309,7 @@ function loadData() {
         headers.slice(3).forEach(col => columns.push({ title: col, field: col }));
 
         if (!table) {
-           table = new Tabulator("#table", { 
-    data: jsonData, 
-    columns: columns, 
-    layout: "fitDataStretch",
-    height: "100%", // WICHTIG: Tabelle füllt den Container
-});
-
+            table = new Tabulator("#table", { data: jsonData, columns: columns, layout: "fitDataStretch" });
         } else {
             table.replaceData(jsonData);
         }
