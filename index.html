@@ -310,7 +310,23 @@ function loadData() {
         ];
 
         // Restliche Spalten
-        headers.slice(3).forEach(col => columns.push({ title: col, field: col }));
+       headers.slice(3).forEach(col => columns.push({
+    title: col,
+    field: col,
+    sorter: function(a, b) {
+
+        function parseDate(val) {
+            if (!val) return 0;
+
+            // entfernt "< "
+            val = val.replace("< ", "");
+
+            return new Date(val).getTime();
+        }
+
+        return parseDate(a) - parseDate(b);
+    }
+}));
 
         if (!table) {
             table = new Tabulator("#table", { data: jsonData, columns: columns, layout: "fitDataStretch" });
