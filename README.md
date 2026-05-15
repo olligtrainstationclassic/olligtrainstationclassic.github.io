@@ -41,12 +41,7 @@ To use the TrainStation Classic Network:
 
 This project does not expose any public APIs
 
-## License Information
-
-The license for this project has **not yet been specified**.
-
 ## Acknowledgments
 
 *   Inspired by the "TrainStation Classic" game and its dedicated community.
 *   Special thanks to all players who contribute to the network.
-*   
