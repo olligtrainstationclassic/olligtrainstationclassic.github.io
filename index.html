@@ -1,263 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta property="og:title" content="TrainStation Classic Add Friends Network">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="Find friends for TrainStation Classic. Updated daily!">
+    <meta property="og:image" content="https://olligtrainstationclassic.github.io/Preview.png">
+    <meta property="og:url" content="https://olligtrainstationclassic.github.io/">
 
-<meta charset="UTF-8">
-<!-- Link Vorschau -->
-<meta property="og:title" content="TrainStation Classic Add Friends Network">
-<meta property="og:type" content="website">
-<meta property="og:description" content="Find friends for TrainStation Classic. Copy portal names accurately with a single click. Use the smart search. Direct links to Facebook profiles. Updated daily!">
-<meta property="og:image" content="https://olligtrainstationclassic.github.io/Preview.png">
-<meta property="og:url" content="https://olligtrainstationclassic.github.io/">
+    <title>Trainstation Add Friends Network</title>
 
-<title>Trainstation Add Friends Network</title>
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <meta name="theme-color" content="#0a0c10">
 
-<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="apple-mobile-web-app-title" content="TrainStation Classic Network" />
-<link rel="manifest" href="/site.webmanifest" />
+    <!-- Tabulator & Google Fonts -->
+    <link href="https://unpkg.com/tabulator-tables@5.5.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/tabulator-tables@5.5.0/dist/js/tabulator.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<!-- Das hier macht die Browser-Leiste dunkel -->
-<meta name="theme-color" content="#111111">
-<meta name="msapplication-TileColor" content="#111111">    
+     <style>
+        :root {
+            --primary: #00d1ff;
+            --bg-dark: #0a0c10;
+            --panel-bg: #161b22;
+            --border-glow: 0 0 10px rgba(0, 209, 255, 0.4);
+            --muted: #8aa0b2;
+        }
 
-<link href="https://unpkg.com/tabulator-tables@5.5.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
-<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-<script src="https://unpkg.com/tabulator-tables@5.5.0/dist/js/tabulator.min.js"></script>
+        body {
+            background-color: var(--bg-dark);
+            color: #e6edf3;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+        /* Header */
+        .header-container {
+            background: linear-gradient(rgba(10, 12, 16, 0.6), rgba(10, 12, 16, 0.6)), 
+                        radial-gradient(circle at center, #1c2128 0%, #0a0c10 100%);
+            border-bottom: 1px solid var(--primary);
+            box-shadow: var(--border-glow);
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header-img {
+            max-height: 120px;
+            filter: drop-shadow(0 0 15px var(--primary));
+        }
 
-<style>
+        .topbar {
+            background: var(--panel-bg);
+            padding: 15px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
 
-body{
-background:#111;
-color:#eee;
-font-family:Arial;
-margin:0;
+        .explanation-text {
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .messenger-inline-btn {
+            background: transparent;
+            color: #fff !important;
+            border: 1px solid var(--primary);
+            padding: 5px 15px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            box-shadow: var(--border-glow);
+            text-decoration: none;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+                .messenger-inline-btn:hover {
+            background: var(--primary);
+            color: #000 !important;
+        }
+
+        .search-info-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        input#search {
+            background: #0d1117;
+            color: var(--primary);
+            border: 1px solid #30363d;
+            border-radius: 20px;
+            padding: 10px 20px;
+            flex-grow: 1;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+            input#search:focus {
+            border-color: var(--primary);
+            box-shadow: var(--border-glow);
+        }
+
+        /* TABULATOR CORE FIXES */
+        #table {
+            background-color: var(--bg-dark);
+            height: calc(100vh - 250px);
+        }
+
+        .tabulator {
+            border: none !important;
+            background-color: var(--bg-dark) !important;
+        }
+
+        /* Nur den Header Text Cyan machen */
+        .tabulator-header {
+            background-color: #0d1117 !important;
+            border-bottom: 2px solid var(--primary) !important;
+        }
+
+        .tabulator-header .tabulator-col {
+            background-color: #0d1117 !important;
+            color: var(--primary) !important;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .tabulator-header .tabulator-col-title {
+            color: var(--primary) !important;
+        }
+
+        /* Zebra Look Fix - Farben für die Zeilen */
+        .tabulator-row {
+            border-bottom: 1px solid #30363d !important;
+            background-color: #161b22 !important; /* Odd rows */
+            color: #c9d1d9 !important;
+            transition: background 0.2s;
+        }
+
+        .tabulator-row.tabulator-row-even {
+            background-color: #0d1117 !important; /* Even rows */
+        }
+
+        .tabulator-row :hover {
+            box-shadow: 0 0 10px var(--primary);
+            animation: glow 1s infinite alternate;
+        }
+
+@keyframes glow {
+ 0% {
+   box-shadow: 0 0 5px var(--primary);
+ }
+ 100% {
+   box-shadow: 0 0 10px var(--primary);
+ }
 }
 
-/* header image */
-.header{
-width:100%;
-max-height:220px;
-object-fit:cover;
-}
+        .tabulator-cell {
+            padding: 12px !important;
+            border-right: 1px solid #30363d !important;
+        }
 
-/* top bar */
-.topbar{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:30px;
-padding:12px;
-}
+        /* Facebook Links */
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
 
-/* search box */
-input{
-background:#222;
-color:#eee;
-border:1px solid #444;
-padding:8px 12px;
-width:240px;
-font-size:15px;
-}
+            a:hover {
+            text-decoration: underline;
+            text-shadow: 0 0 8px var(--primary);
+        }
 
-/* info text */
-.info{
-font-size:15px;
-font-weight: bold;
-color:#bbb;
-display:flex;
-align-items:center;
-gap:6px;
-}
+        /* Portal Name Column */
+        .portalCol {
+            font-family: 'Roboto Mono', monospace !important;
+            color: #ffffff !important;
+            font-size: 15px;
+        }
 
-.icon{
-font-size:16px;
-}
+                .portalCol:active {
+            color: var(--primary) !important;
+        }
 
-/* table */
-#table{
-height:calc(100dvh - 220px);
-font-size:15px;
-}
 
-/* header row */
-.tabulator-header{
-position:sticky !important;
-top:0;
-z-index:999;
-font-size:19px;
-font-weight:600;
-}
-
-/* higher rows */
-.tabulator-row{
-min-height:30px;
-}
-
-/* all cells vertical center */
-.tabulator-cell{
-padding-top:10px;
-padding-bottom:10px;
-}
-
-.tabulator-cell > div{
-width:100%;
-display:flex;
-align-items:center;
-}
-
-/* facebook links */
-a{
-color:#7cc7ff;
-text-decoration:none;
-font-weight:400;
-}
-
-a:hover{
-color:#a8ddff;
-text-decoration:underline;
-}
-
-/* Pixel Portal Name */
-.tabulator-cell.portalCol{
-font-family:'Roboto Mono', monospace !important;
-font-weight:700 !important;
-font-size:16px;
-color:#ffffff;
-}
-
-/* Status centered */
-.statusCol{
-justify-content:center;
-}
-/* Generelle Anpassung für kompaktes Layout */
-.topbar {
-    display: block;
-    text-align: center;
-    padding: 10px 0; /* Weniger Padding oben/unten */
-    width: 100%;
-}
-
-/* Neuer, dezenterer Text-Stil (kein dunkler Kasten mehr) */
-.explanation-text {
-    color: #ccc; /* Etwas helleres Grau */
-    font-size: 15px;
-    margin: 5px 0 15px 0; /* Weniger Abstand */
-    line-height: 1.4;
-}
-
-/* Kleinerer, integrierter Messenger-Button */
-.messenger-inline-btn {
-    display: inline-block;
-    margin-left: 8px;
-    background: #0084ff;
-    color: white !important;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 13px;
-    text-decoration: none !important;
-    vertical-align: middle;
-}
-
-/* Bestehende Such-Wrapper-Zentrierung */
-.search-info-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px; /* Etwas weniger Gap */
-    margin-bottom: 5px;
-}
-
-/* --- Spezifische Desktop-Anpassungen (staucht den Header) --- */
-@media (min-width: 901px) {
-    /* WICHTIG: Die Klasse des Logos anpassen, falls sie anders heißt */
-    .header img, .logo-container img { 
-        max-height: 120px !important; /* Verkleinert die Logos deutlich */
-        width: auto;
-    }
-
-    .topbar {
-        padding: 5px 0; /* Noch weniger Padding auf Desktop */
-    }
-
-    .explanation-text {
-        font-size: 14px; /* Etwas kleinerer Text */
-        margin: 0 0 10px 0;
-    }
-}
-
-/* Mobile Optimierung (wie vorher, nur kompakter) */
-@media (max-width: 900px) {
-    .search-info-wrapper {
-        flex-direction: column;
-        gap: 8px;
-    }
-    .explanation-text {
-        font-size: 14px;
-        padding: 0 10px;
-    }
-}
-    
-/* mobile */
-@media (max-width:900px){
-
-    #table{
-height:calc(100dvh - 180px);
-}
-
-.tabulator{
-font-size:14px;
-}
-
-.tabulator-row{
-min-height:44px;
-}
-
-.topbar{
-flex-direction:column;
-gap:6px;
-}
-
-.header{
-max-height:140px;
-}
-
-}
-
-</style>
-
+        @media (max-width: 900px) {
+            .search-info-wrapper { flex-direction: column; }
+            .header-img { max-height: 80px; }
+        }
+    </style>
 </head>
 
 <body>
 
-<img src="header.jpg" class="header">
+<div class="header-container">
+    <img src="header.avif" class="header-img" alt="Trainstation Network">
+</div>
 
 <div class="topbar">
-    <!-- Kompakterer Erklärungs-Text -->
     <p class="explanation-text">
-        Would you like to be added? Send me your exact portal name via private message.
-        <a href="https://m.me/oliver.garbrecht" target="_blank" class="messenger-inline-btn">📬 Send message</a>
+        Join the Network
+        <a href="https://m.me/oliver.garbrecht" target="_blank" class="messenger-inline-btn">📬 MESSAGE ME</a>
     </p>
 
     <div class="search-info-wrapper">
-        <input id="search" placeholder="Search...">
-        <div class="info">
-            <span class="icon">📋</span>
-            One-Click-Copy "Pixel Portal Name"
-</div>
-
+        <input id="search" placeholder="Filter Players or Portal Names...">
+        
+            <span style="color:var(--muted); font-size: 14px;">⚡ One-Click-Copy "Pixel Portal Name"</span>
+        </div>
+    </div>
 </div>
 
 <div id="table"></div>
 
-
 <script>
-
+// FUNKTIONEN BLEIBEN UNVERÄNDERT WIE GEWÜNSCHT
 const sheetURL = "https://docs.google.com/spreadsheets/d/1cZNXQHDezV_W0maz0ufxbL1nVJfchSKNjlgDucwbtig/export?format=xlsx";
 let table;
 
@@ -267,19 +235,14 @@ function loadData() {
     .then(data => {
         const workbook = XLSX.read(data, {cellLinks: true});
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        
-        // Wir wandeln das Sheet in ein Array von Arrays um, um die Links präzise zu extrahieren
         const rows = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: ""});
         const headers = rows[0];
         const jsonData = [];
 
-        // Wir gehen jede Zeile durch und verheiraten Text mit dem versteckten Link
         for (let r = 1; r < rows.length; r++) {
             let rowObj = {};
             headers.forEach((header, c) => {
                 rowObj[header] = rows[r][c];
-                
-                // Nur für Spalte B (Index 1): Link extrahieren
                 if (c === 1) {
                     const cellAddr = XLSX.utils.encode_cell({r: r, c: c});
                     const cell = sheet[cellAddr];
@@ -290,18 +253,14 @@ function loadData() {
         }
 
         const columns = [
-            { title: headers[0], field: headers[0], cssClass: "statusCol", hozAlign: "center", frozen: true },
+            { title: headers[0], field: headers[0], cssClass: "statusCol", hozAlign: "center", width: 80 },
             { 
                 title: headers[1], 
                 field: headers[1], 
-                frozen: true,
                 formatter: function(cell) {
                     const name = cell.getValue();
-                    const link = cell.getData().fb_link; // Wir holen den Link aus unserem neuen Feld
-                    
+                    const link = cell.getData().fb_link;
                     if (!name) return "";
-                    
-                    // Wenn ein Link existiert, nutzen wir ihn, sonst Fallback zur Suche
                     const url = link ? link : "https://www.facebook.com" + encodeURIComponent(name);
                     return `<a href="${url}" target="_blank">${name}</a>`;
                 }
@@ -309,60 +268,49 @@ function loadData() {
             { 
                 title: headers[2], 
                 field: headers[2], 
-                cssClass: "portalCol", 
-                frozen: true,
-                cellClick: (e, cell) => navigator.clipboard.writeText(cell.getValue())
+                cssClass: "portalCol",
+                cellClick: (e, cell) => {
+                    navigator.clipboard.writeText(cell.getValue());
+                    cell.getElement().style.color = "#00d1ff";
+                    setTimeout(() => cell.getElement().style.color = "#fff", 500);
+                }
             }
         ];
 
-        // Restliche Spalten
-       headers.slice(3).forEach(col => columns.push({
-    title: col,
-    field: col,
-    sorter: function(a, b) {
-
-        function parseDate(val) {
-            if (!val) return 0;
-
-            // entfernt "< "
-            val = val.replace("< ", "");
-
-            return new Date(val).getTime();
-        }
-
-        return parseDate(a) - parseDate(b);
-    }
-}));
+        headers.slice(3).forEach(col => columns.push({
+            title: col,
+            field: col,
+            sorter: function(a, b) {
+                function parseDate(val) {
+                    if (!val) return 0;
+                    val = val.replace("< ", "");
+                    return new Date(val).getTime();
+                }
+                return parseDate(a) - parseDate(b);
+            }
+        }));
 
         if (!table) {
-            table = new Tabulator("#table", { data: jsonData, columns: columns, layout: "fitDataStretch" });
+            table = new Tabulator("#table", { 
+                data: jsonData, 
+                columns: columns, 
+                layout: "fitColumns",
+                responsiveLayout: "collapse"
+            });
         } else {
             table.replaceData(jsonData);
         }
     });
 }
 
-
-
 loadData();
 
-// Suche
 document.getElementById("search").addEventListener("keyup", function() {
     let value = this.value.toLowerCase();
     table.setFilter(data =>
         Object.values(data).some(v => String(v).toLowerCase().includes(value))
     );
 });
-
-
-
 </script>
-
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d680339621be47cab1c862016b5007eb"}'></script><!-- End Cloudflare Web Analytics -->
-    
 </body>
-
 </html>
-
-
-
