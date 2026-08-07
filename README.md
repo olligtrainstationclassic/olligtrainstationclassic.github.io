@@ -1,6 +1,6 @@
 # TrainStation Classic Network
 
-![Header Image](header.jpg)
+![Header Image](header.avif)
 
 This repository hosts the static website for the **TrainStation Classic Network**, a community-driven platform designed to help players of the "TrainStation Classic" game connect with each other and expand their in-game friends list. The site aims to foster a stronger community by providing a central hub for players to find and add new friends.
 
