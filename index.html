@@ -160,19 +160,10 @@
             background-color: #0d1117 !important; /* Even rows */
         }
 
-        .tabulator-row :hover {
-            box-shadow: 0 0 10px var(--primary);
-            animation: glow 1s infinite alternate;
+        .tabulator-row:hover {
+            border-bottom: 1px solid var(--primary) !important;
+            outline: 1px solid var(--primary);
         }
-
-@keyframes glow {
- 0% {
-   box-shadow: 0 0 5px var(--primary);
- }
- 100% {
-   box-shadow: 0 0 10px var(--primary);
- }
-}
 
         .tabulator-cell {
             padding: 12px !important;
