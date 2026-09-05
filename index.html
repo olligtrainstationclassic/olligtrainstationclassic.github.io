@@ -5,7 +5,7 @@
     <meta property="og:title" content="TrainStation Classic Add Friends Network">
     <meta property="og:type" content="website">
     <meta property="og:description" content="Find friends for TrainStation Classic. Updated daily!">
-    <meta property="og:image" content="https://olligtrainstationclassic.github.io/preview-add-friends.png">
+    <meta property="og:image" content="https://olligtrainstationclassic.github.io/preview.png">
     <meta property="og:url" content="https://olligtrainstationclassic.github.io/">
 
     <title>Trainstation Add Friends Network</title>
@@ -21,7 +21,6 @@
 <meta name="theme-color" content="#0a0c10">
 <meta name="msapplication-TileColor" content="#0a0c10">
 
-
     <!-- Tabulator & Google Fonts -->
     <link href="https://unpkg.com/tabulator-tables@5.5.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
@@ -34,14 +33,18 @@
             --primary: #00d1ff;
             --bg-dark: #0a0c10;
             --panel-bg: #161b22;
-            --border-glow: 0 0 10px rgba(0, 209, 255, 0.4);
+            --border-glow: #00d1ff;
             --muted: #8aa0b2;
+            --text: #d8e1ea;
+            --border: #30363d;
         }
+
+        [v-cloak] { display: none; }
 
         body {
             background-color: var(--bg-dark);
-            color: #e6edf3;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--text);
+            font-family: 'Chakra Petch', Arial, sans-serif;
             margin: 0;
             overflow-x: hidden;
         }
@@ -56,14 +59,14 @@
             padding: 20px 0;
         }
         .header-img {
-            max-height: 120px;
+            max-height: 70px;
             filter: drop-shadow(0 0 15px var(--primary));
         }
 
         .topbar {
             background: var(--panel-bg);
             padding: 15px;
-            border-bottom: 1px solid #30363d;
+            border-bottom: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -92,7 +95,7 @@
             margin-left: 10px;
         }
 
-                .messenger-inline-btn:hover {
+            .messenger-inline-btn:hover {
             background: var(--primary);
             color: #000 !important;
         }
@@ -108,7 +111,7 @@
         input#search {
             background: #0d1117;
             color: var(--primary);
-            border: 1px solid #30363d;
+            border: 1px solid var(--border);
             border-radius: 20px;
             padding: 10px 20px;
             flex-grow: 1;
@@ -128,14 +131,15 @@
         }
 
         .tabulator {
-            border: none !important;
             background-color: var(--bg-dark) !important;
         }
 
         /* Nur den Header Text Cyan machen */
         .tabulator-header {
             background-color: #0d1117 !important;
-            border-bottom: 2px solid var(--primary) !important;
+            border-bottom: 1px solid var(--primary) !important;
+            letter-spacing: .1em;
+            padding: 4px 0px;
         }
 
         .tabulator-header .tabulator-col {
@@ -150,9 +154,9 @@
 
         /* Zebra Look Fix - Farben für die Zeilen */
         .tabulator-row {
-            border-bottom: 1px solid #30363d !important;
+            border-bottom: 1px solid var(--border) !important;
             background-color: #161b22 !important; /* Odd rows */
-            color: #c9d1d9 !important;
+            color: var(--text) !important;
             transition: background 0.2s;
         }
 
@@ -161,14 +165,24 @@
         }
 
         .tabulator-row:hover {
-            border-bottom: 1px solid var(--primary) !important;
+        border-bottom: 1px solid var(--primary) !important;
             outline: 1px solid var(--primary);
         }
 
         .tabulator-cell {
-            padding: 12px !important;
-            border-right: 1px solid #30363d !important;
+            padding: 12px 8px !important;
+            border-right: 1px solid var(--border) !important;
         }
+
+                /* BREITE SCROLLBAR */
+        .tabulator-tableholder::-webkit-scrollbar { width: 18px; height: 18px; }
+        .tabulator-tableholder::-webkit-scrollbar-track { background: #0a0c10; }
+        .tabulator-tableholder::-webkit-scrollbar-thumb { 
+            background: var(--border);
+            border-radius: 10px; 
+            border: 3px solid #0a0c10;
+        }
+        .tabulator-tableholder::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
         /* Facebook Links */
         a {
@@ -205,7 +219,7 @@
 <body>
 
 <div class="header-container">
-    <img src="header.png" class="header-img" alt="Trainstation Network">
+    <img src="header-add-friends.png" class="header-img" alt="Trainstation Network">
 </div>
 
 <div class="topbar">
@@ -220,7 +234,6 @@
             <span style="color:var(--muted); font-size: 14px;">⚡ One-Click-Copy "Pixel Portal Name"</span>
         </div>
     </div>
-</div>
 
 <div id="table"></div>
 
@@ -295,6 +308,7 @@ function loadData() {
                 data: jsonData, 
                 columns: columns, 
                 layout: "fitColumns",
+                height: "calc(90vh - 155px)",
                 responsiveLayout: "collapse"
             });
         } else {
